@@ -28,4 +28,4 @@ jobs:
       uses: coverallsapp/github-action@master   
       with:
         github-token: ${{ secrets.TOKEN }} 
-        path-to-lcov: ShuDuKuHelper/SuDoKuHelper.Test/TestResults/coverage.info 
+        path-to-lcov: SuDoKuHelper.Test/TestResults/coverage.info 
