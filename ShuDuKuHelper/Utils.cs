@@ -4,7 +4,7 @@ namespace ShuDuKuHelper;
 
 public class Utils
 {
-    public async Task<List<ShuDuItemModel>> CreateTable()
+    public async Task<List<ShuDuItemModel>> CreateTableAsync()
     {
         var shuDuItems = new List<ShuDuItemModel>();
 
@@ -85,7 +85,7 @@ public class Utils
         };
     }
 
-    public async Task PrintByLines(List<ShuDuItemModel> items)
+    public async Task PrintByLinesAsync(List<ShuDuItemModel> items)
     {
         items.ForEach(e =>
         {

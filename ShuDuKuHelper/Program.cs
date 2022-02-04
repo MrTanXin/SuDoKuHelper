@@ -9,8 +9,8 @@ public class Program
     {
         var utils = new Utils();
 
-        var shuDuItems = await utils.CreateTable();
-        await utils.PrintByLines(shuDuItems);
+        var shuDuItems = await utils.CreateTableAsync();
+        await utils.PrintByLinesAsync(shuDuItems);
 
     }
 
