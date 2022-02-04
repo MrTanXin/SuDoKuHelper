@@ -27,5 +27,5 @@ jobs:
     - name: Publish coverage report to coveralls.io
       uses: coverallsapp/github-action@master   
       with:
-        github-token: ${{ secrets.TOKEN }} 
+        github-token: ${{ secrets.GITHUB_TOKEN }} 
         path-to-lcov: SuDoKuHelper.Test/TestResults/coverage.info 
