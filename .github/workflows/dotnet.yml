@@ -21,8 +21,7 @@ jobs:
       run: dotnet build --no-restore
     - name: Run automated unit and integration tests
       run: dotnet test SuDoKuHelper.Test/SuDoKuHelper.Test.csproj 
-        /p:CollectCoverage=true 
-        /p:CoverletOutput=TestResults/ 
+        /p:CollectCoverage=true
         /p:CoverletOutputFormat=lcov
     - name: Coveralls
       uses: coverallsapp/github-action@master
