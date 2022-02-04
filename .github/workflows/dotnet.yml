@@ -19,10 +19,8 @@ jobs:
       run: dotnet restore
     - name: Build
       run: dotnet build --no-restore
-#     - name: Test
-#       run: dotnet test --no-build --verbosity normal
     - name: Run automated unit and integration tests
-      run: dotnet test SuDoKuTest/SuDoKuTest.csproj 
+      run: dotnet test SuDoKuHelper.Test/SuDoKuHelper.Test.csproj 
         /p:CollectCoverage=true 
         /p:CoverletOutput=TestResults/ 
         /p:CoverletOutputFormat=lcov
