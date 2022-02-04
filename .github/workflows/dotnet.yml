@@ -24,7 +24,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Run automated unit and integration tests
-      run: dotnet test SuDoKuHelper.Test/SuDoKuHelper.Test.csproj 
+      run: dotnet test 
         /p:CollectCoverage=true 
         /p:CoverletOutput=TestResults/ 
         /p:CoverletOutputFormat=lcov
