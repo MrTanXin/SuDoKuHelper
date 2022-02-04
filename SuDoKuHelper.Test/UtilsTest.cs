@@ -67,7 +67,6 @@ namespace SuDoKuHelper.Test
 
         #endregion
 
-
         #region Print
 
         /// <summary>
@@ -83,6 +82,12 @@ namespace SuDoKuHelper.Test
             var exception = await Record.ExceptionAsync(() => utils.PrintByLinesAsync(arrange));
             Assert.Null(exception);
         }
+
+        #endregion
+
+        #region Remove
+
+        
 
         #endregion
 
