@@ -1,21 +1,19 @@
 using System.Threading.Tasks;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using ShuDuKuHelper;
+using Xunit;
 
-namespace SuDoKuTest
+namespace SuDoKuHelper.Test
 {
-    [TestClass]
-    public class SuDoKuHelperUnitTest
+    public class UtilsTest
     {
-        [TestMethod]
+        [Fact]
         public async Task Generate_Count_Equal_81()
         {
             var arrange = await new Utils().CreateTable();
 
-            Assert.AreEqual(arrange.Count, 81);
+            var expected = 81;
 
+            Assert.Equal(expected, arrange.Count);
         }
-
-
     }
 }
