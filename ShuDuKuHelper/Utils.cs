@@ -101,7 +101,7 @@ public class Utils
             for (int col = 1; col < 10; col++)
             {
                 Console.Write(
-                    $"{items.Where(item => item.Row == row).FirstOrDefault(item => item.Col == col)?.Val.ToString() ?? " "} ");
+                    $"{items.Where(item => item.Row == row).FirstOrDefault(item => item.Col == col)?.Value} ");
 
                 if ((col)%3 == 0)
                 {
@@ -116,7 +116,6 @@ public class Utils
             }
         }
     }
-
 
     public async Task RemovePossibleItem(List<ShuDuItemModel> items, ShuDuItemModel input)
     {
@@ -205,16 +204,22 @@ public class Utils
         return true;
     }
 
-
     public async Task<bool> HandleAsync(List<ShuDuItemModel> shuDuItems)
     {
         while (!await IsFinishAsync(shuDuItems))
         {
             var item = shuDuItems.Where(item => item.Val == null).FirstOrDefault(item => item.PossibleValue.Count == 1)??null;
 
-            if (item == null)
+            if (item == null )
             {
-                return false;
+                if (!await InsightAsync(shuDuItems))
+                {
+                    return false;
+                }
+                else
+                {
+                    continue;
+                }
             }
 
             await RemovePossibleItem(shuDuItems, item);
@@ -226,5 +231,132 @@ public class Utils
     public async Task<bool> IsFinishAsync(List<ShuDuItemModel> shuDuItems)
     {
         return shuDuItems.Count(item => item.Val == null) == 0;
+    }
+
+    public async Task<bool> InsightAsync(List<ShuDuItemModel> shuDuItems)
+    {
+    
+            return await InsightByRowAsync(shuDuItems) ||
+                   await InsightByColAsync(shuDuItems) ||
+                   await InsightByBlockAsync(shuDuItems);
+        
+    }
+
+    private async Task<bool> InsightByBlockAsync(List<ShuDuItemModel> shuDuItems)
+    {
+        var dic = InitDic();
+
+        for (int block = 1; block < 10; block++)
+        {
+            var list = shuDuItems.Where(item => item.Block == block).Where(item=>item.Val == null).ToList();
+
+            foreach (var shuDuItemModel in list)
+            {
+                foreach (var item in shuDuItemModel.PossibleValue)
+                {
+                    dic[item].Add(shuDuItemModel);
+                }
+            }
+
+            var dicItems = dic.Where(item => item.Value.Count == 1).ToList();
+            if (dicItems.Count != 0)
+            {
+                var item = dicItems.FirstOrDefault();
+
+                await RemovePossibleItem(shuDuItems, item.Value.FirstOrDefault()?.Row ?? 0,
+                    item.Value.FirstOrDefault()?.Col ?? 0, item.Key);
+
+                return true;
+            }
+
+            dic = InitDic();
+
+        }
+        return false;
+    }
+
+    private async Task<bool> InsightByColAsync(List<ShuDuItemModel> shuDuItems)
+    {
+        var dic = InitDic();
+
+        for (int col = 1; col < 10; col++)
+        {
+            for (int row = 1; row < 10; row++)
+            {
+                var item = shuDuItems.Where(e => e.Row == row).FirstOrDefault(e => e.Col == col);
+                if (item!.Val != null) continue;
+                foreach (var pv in item.PossibleValue)
+                {
+                    dic[pv].Add(item);
+                }
+            }
+
+            var dicItems = dic.Where(item => item.Value.Count == 1).ToList();
+            if (dicItems.Count != 0)
+            {
+                var item = dicItems.FirstOrDefault();
+
+                await RemovePossibleItem(shuDuItems, item.Value.FirstOrDefault()?.Row ?? 0,
+                    item.Value.FirstOrDefault()?.Col ?? 0, item.Key);
+
+                return true;
+            }
+
+            dic = InitDic();
+
+        }
+
+        return false;
+    }
+
+    private async Task<bool> InsightByRowAsync(List<ShuDuItemModel> shuDuItems)
+    {
+        var dic = InitDic();
+
+        for (int row = 1; row < 10; row++)
+        {
+            for (var col = 1; col < 10; col++)
+            {
+                var item = shuDuItems.Where(e => e.Row == row).FirstOrDefault(e => e.Col == col);
+                if (item!.Val != null) continue;
+                foreach (var pv in item.PossibleValue)
+                {
+                    dic[pv].Add(item);
+                }
+            }
+
+            var dicItems = dic.Where(item => item.Value.Count == 1).ToList();
+            if (dicItems.Count != 0)
+            {
+                var item = dicItems.FirstOrDefault();
+
+                await RemovePossibleItem(shuDuItems, item.Value.FirstOrDefault()?.Row ?? 0,
+                    item.Value.FirstOrDefault()?.Col ?? 0, item.Key);
+
+                return true;
+            }
+
+            dic = InitDic();
+
+        }
+
+        return false;
+    }
+
+    private Dictionary<int, List<ShuDuItemModel>> InitDic()
+    {
+        return new Dictionary<int, List<ShuDuItemModel>>()
+        {
+            {1, new List<ShuDuItemModel>()},
+            {2, new List<ShuDuItemModel>()},
+            {3, new List<ShuDuItemModel>()},
+            {4, new List<ShuDuItemModel>()},
+            {5, new List<ShuDuItemModel>()},
+            {6, new List<ShuDuItemModel>()},
+            {7, new List<ShuDuItemModel>()},
+            {8, new List<ShuDuItemModel>()},
+            {9, new List<ShuDuItemModel>()},
+        };
+
     }
 }

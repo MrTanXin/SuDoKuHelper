@@ -12,6 +12,8 @@ public class ShuDuItemModel
 
     public int? Val{ get; set; }
 
+    public string Value => Val == null ? "?" : Val.ToString();
+
     public HashSet<int> PossibleValue { get; set; }
 
 

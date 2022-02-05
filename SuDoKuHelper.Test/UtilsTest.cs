@@ -84,12 +84,6 @@ namespace SuDoKuHelper.Test
         }
 
         #endregion
-
-        #region Remove
-
         
-
-        #endregion
-
     }
 }

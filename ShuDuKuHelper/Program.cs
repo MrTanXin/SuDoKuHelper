@@ -32,6 +32,8 @@ public class Program
         {
             Console.WriteLine("===========Fail===========");
             await utils.PrintByLinesAsync(shuDuItems);
+
+            await utils.PrintByBlockAsync(shuDuItems);
         }
     }
 
