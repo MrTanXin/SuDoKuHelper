@@ -36,7 +36,7 @@ public class SnapshotCore
         return Utils.Check(shuDuItems);
     }
 
-    public async Task RecordSnapshotAsync(List<SuDoKuItemModel> shuDuItems)
+    public async Task RecordSnapshotAsync(List<SuDoKuItemModel> shuDuItems,bool notExit = false)
     {
         var solver = await ExecAsync(shuDuItems);
         if (solver == SuDoKuCheckEnum.Error)
@@ -46,7 +46,7 @@ public class SnapshotCore
 
         if (solver == SuDoKuCheckEnum.Ok)
         {
-            Utils.PrintByBlock(shuDuItems);
+            Utils.PrintByBlock(shuDuItems,notExit);
         }
         
         for (int candidateCount = 2; candidateCount < 10; candidateCount++)
@@ -63,8 +63,8 @@ public class SnapshotCore
                         foreach (var i in entity.PossibleValue)
                         {
                             var newEntity = Utils.ListCopy(shuDuItems);
-                             Utils.RemovePossibleItem(newEntity, entity.Row, entity.Col, i);
-                            await RecordSnapshotAsync(newEntity);
+                            Utils.RemovePossibleItem(newEntity, entity.Row, entity.Col, i);
+                            await RecordSnapshotAsync(newEntity,notExit);
                         }
                     });
                 }

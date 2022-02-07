@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using SuDoKuHelper.Model;
 using Xunit;
 
 namespace SuDoKuHelper.Test
 {
-    public class UtilsTest
+    public class UnitTest
     {
         #region Generate
 
@@ -253,6 +254,85 @@ namespace SuDoKuHelper.Test
 
         #endregion
 
+        #region IsCurrection
+
+        [Fact]
+        public void IsCurrection_ShouldBe_Ok()
+        {
+            var arrange = Utils.CreateTable();
+            Utils.Input(arrange, new List<string>()
+            {
+                "478615932",
+                "963482715",
+                "152397648",
+                "296874153",
+                "315269487",
+                "847531296",
+                "721953864",
+                "634128579",
+                "589746321"
+            });
+
+            var excepted = true;
+
+            Assert.Equal(excepted, Utils.IsCurrection(arrange));
+        }
+
+        #endregion
+
+
+        #region HasEmptyPossibleValue
+
+        [Fact]
+        public void HasEmptyPossibleValue_ShouldBe_Ok()
+        {
+            var arrange = Utils.CreateTable();
+            Utils.Input(arrange, new List<string>()
+            {
+                "478615932",
+                "963482715",
+                "152397648",
+                "296874153",
+                "315269487",
+                "847531296",
+                "721953864",
+                "634128579",
+                "589746321"
+            });
+
+            var excepted = false;
+
+            Assert.Equal(excepted, Utils.HasEmptyPossibleValue(arrange));
+        }
+
+        #endregion
+
+        #region Complex Resolve
+
+        [Fact]
+        public async Task CanSolve()
+        {
+            var table = Utils.CreateTable();
+            Utils.Input(table, new List<string>()
+            {
+                "008605000",
+                "000000700",
+                "000300000",
+                "000074050",
+                "310000000",
+                "000000200",
+                "700000064",
+                "000120000",
+                "000000300"
+            });
+
+            var arrange = await Record.ExceptionAsync(async () =>
+            {
+                await new SnapshotCore().RecordSnapshotAsync(table, true);
+            });
+        }
+
+        #endregion
 
     }
 }
