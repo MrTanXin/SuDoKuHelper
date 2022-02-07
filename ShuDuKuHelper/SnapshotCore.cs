@@ -87,7 +87,7 @@ public class SnapshotCore
                     {
                         foreach (var i in entity.PossibleValue)
                         {
-                            var newEntity = await utils.ListCopyAsync(shuDuItems);
+                            var newEntity = utils.ListCopyAsync(shuDuItems);
                             await utils.RemovePossibleItem(newEntity, entity.Row, entity.Col, i);
                             await RecordSnapshotAsync(newEntity);
                         }

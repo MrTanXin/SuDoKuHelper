@@ -9,36 +9,34 @@ public class Utils
 {
     private readonly object _locker = new();
 
-    public async Task<List<ShuDuItemModel>> CreateTableAsync()
+    public List<ShuDuItemModel> CreateTableAsync()
     {
-        return await Task.Factory.StartNew(() =>
+        var shuDuItems = new List<ShuDuItemModel>();
+
+        int row = 1, col = 1;
+        int count = 0;
+
+        while (count < 81)
         {
-            var shuDuItems = new List<ShuDuItemModel>();
-
-            int row = 1, col = 1;
-            int count = 0;
-
-            while (count < 81)
+            count++;
+            shuDuItems.Add(new ShuDuItemModel()
             {
-                count++;
-                shuDuItems.Add(new ShuDuItemModel()
-                {
-                    Row = row,
-                    Col = col,
-                    Block = CalcBlock(row, col),
-                    PossibleValue = CalcPossibleValue()
-                });
+                Row = row,
+                Col = col,
+                Block = CalcBlock(row, col),
+                PossibleValue = CalcPossibleValue()
+            });
 
-                col++;
+            col++;
 
-                if (col > 9)
-                {
-                    col = 1;
-                    row++;
-                }
+            if (col > 9)
+            {
+                col = 1;
+                row++;
             }
-            return shuDuItems;
-        });
+        }
+
+        return shuDuItems;
     }
 
     private HashSet<int> CalcPossibleValue()
@@ -172,15 +170,12 @@ public class Utils
 
     private async Task SetCurrentValueAsync(List<ShuDuItemModel> items, int row, int col, int target)
     {
-        await Task.Factory.StartNew(() =>
-        {
             var item = items.Where(item => item.Row == row).FirstOrDefault(item => item.Col == col);
 
             item!.Val = target;
-        });
     }
 
-    public async Task<bool> InputAsync(List<ShuDuItemModel> shuDuItems)
+    public async Task<bool> InputAsync(List<ShuDuItemModel> shuDuItems,List<string> inputLine = null)
     {
         var inputList = new List<int>(10);
 
@@ -188,7 +183,7 @@ public class Utils
         {
             again:;
             Console.WriteLine($"Row {row}:");
-            var input = Console.ReadLine();
+            var input = inputLine == null ? Console.ReadLine() : inputLine[row];
             if (input?.Length != 9)
             {
                 goto again;
@@ -231,10 +226,7 @@ public class Utils
 
     private async Task<bool> IsFinishAsync(List<ShuDuItemModel> shuDuItems)
     {
-        return await Task.Factory.StartNew(() =>
-        {
             return shuDuItems.Count(item => item.Val == null) == 0;
-        });
     }
 
     public async Task<SuDoKuCheckEnum> CheckAsync(List<ShuDuItemModel> items)
@@ -258,37 +250,32 @@ public class Utils
 
     private async Task<bool> HasEmptyPossibleValueAsync(List<ShuDuItemModel> items)
     {
-        return await Task.Factory.StartNew(() =>
-        {
             return items.Where(e => e.Val == null).Count(item => item.PossibleValue.Count == 0) > 1;
-        });
     }
 
     private async Task<bool> IsCurrectionAsync(List<ShuDuItemModel> items)
     {
-        return await Task.Factory.StartNew(() =>
+        for (var index = 1; index < 10; index++)
         {
-            for (var index = 1; index < 10; index++)
+            var blockList = items.Where(e => e.Block == index).ToList();
+            var rowList = items.Where(e => e.Row == index).ToList();
+            var colList = items.Where(e => e.Col == index).ToList();
+
+            var count = blockList.Count(e => e.Val != null) +
+                        rowList.Count(e => e.Val != null) +
+                        colList.Count(e => e.Val != null);
+
+            var blockCount = blockList.Select(e => e.Val).GroupBy(e => e).Count();
+            var rowCount = rowList.Select(e => e.Val).GroupBy(e => e).Count();
+            var colCount = colList.Select(e => e.Val).GroupBy(e => e).Count();
+
+            if (!(count == 27 && blockCount == 9 && rowCount == 9 && colCount == 9))
             {
-                var blockList = items.Where(e => e.Block == index).ToList();
-                var rowList = items.Where(e => e.Row == index).ToList();
-                var colList = items.Where(e => e.Col == index).ToList();
-
-                var count = blockList.Count(e => e.Val != null) +
-                            rowList.Count(e => e.Val != null) +
-                            colList.Count(e => e.Val != null);
-
-                var blockCount = blockList.Select(e => e.Val).GroupBy(e => e).Count();
-                var rowCount = rowList.Select(e => e.Val).GroupBy(e => e).Count();
-                var colCount = colList.Select(e => e.Val).GroupBy(e => e).Count();
-
-                if (!(count == 27 && blockCount == 9 && rowCount == 9 && colCount == 9))
-                {
-                    return false;
-                }
+                return false;
             }
-            return true;
-        });
+        }
+
+        return true;
     }
 
     public Dictionary<int, List<ShuDuItemModel>> InitDic()
@@ -309,15 +296,12 @@ public class Utils
     }
 
 
-    public async Task<List<ShuDuItemModel>> ListCopyAsync(List<ShuDuItemModel> shuDuItems)
+    public List<ShuDuItemModel> ListCopyAsync(List<ShuDuItemModel> shuDuItems)
     {
-        return await Task.Run(() =>
-        {
-            var result = new List<ShuDuItemModel>();
+        var result = new List<ShuDuItemModel>();
 
-            shuDuItems.ForEach(e => result.Add((ShuDuItemModel) e.Clone()));
+        shuDuItems.ForEach(e => result.Add((ShuDuItemModel) e.Clone()));
 
-            return result;
-        });
+        return result;
     }
 }

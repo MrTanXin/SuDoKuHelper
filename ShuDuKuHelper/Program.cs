@@ -13,7 +13,7 @@ public class Program
         var snap = new SnapshotCore();
 
 
-        var shuDuItems = await utils.CreateTableAsync();
+        var shuDuItems = utils.CreateTableAsync();
         //await utils.PrintByLinesAsync(shuDuItems);
 
         if (await utils.InputAsync(shuDuItems))
