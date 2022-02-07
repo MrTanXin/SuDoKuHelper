@@ -1,14 +1,15 @@
-﻿using System.Text;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Text;
 
 namespace SuDoKuHelper.Model;
 
-public class ShuDuItemModel : ICloneable
+public class SuDoKuItemModel : ICloneable
 {
-    public int Row { get; set; }
+    public int Row { get; init; }
 
-    public int Col { get; set; }
+    public int Col { get; init; }
 
-    public int Block { get; set; }
+    public int Block { get; init; }
 
     public int? Val { get; set; }
 
@@ -41,7 +42,7 @@ public class ShuDuItemModel : ICloneable
             possible.Add(i);
         }
 
-        return new ShuDuItemModel()
+        return new SuDoKuItemModel()
         {
             Block = this.Block,
             Col = this.Col,

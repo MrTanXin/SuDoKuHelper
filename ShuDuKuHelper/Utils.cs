@@ -7,9 +7,9 @@ public static class Utils
 {
     private static readonly object Locker = new();
 
-    public static List<ShuDuItemModel> CreateTableAsync()
+    public static List<SuDoKuItemModel> CreateTableAsync()
     {
-        var shuDuItems = new List<ShuDuItemModel>();
+        var shuDuItems = new List<SuDoKuItemModel>();
 
         int row = 1, col = 1;
         int count = 0;
@@ -17,7 +17,7 @@ public static class Utils
         while (count < 81)
         {
             count++;
-            shuDuItems.Add(new ShuDuItemModel()
+            shuDuItems.Add(new SuDoKuItemModel()
             {
                 Row = row,
                 Col = col,
@@ -48,12 +48,14 @@ public static class Utils
         return set;
     }
 
-    private static int CalcBlock(int row, int col)
+    public static int CalcBlock(int row, int col)
     {
         var colPossible = new List<int>();
 
         switch (col)
         {
+            case < 0:
+                throw new OverflowException();
             case < 4:
                 colPossible =
                     new List<int>()
@@ -80,13 +82,14 @@ public static class Utils
 
         return row switch
         {
+            < 0 => throw new OverflowException(),
             < 4 => colPossible.FirstOrDefault(item => item <= 3),
             < 7 => colPossible.FirstOrDefault(item => item is > 3 and <= 6),
             _ => colPossible.FirstOrDefault(item => item > 6)
         };
     }
 
-    public static void PrintByLinesAsync(List<ShuDuItemModel> items)
+    public static void PrintByLinesAsync(List<SuDoKuItemModel> items)
     {
         items.ForEach(e =>
         {
@@ -94,7 +97,7 @@ public static class Utils
         });
     }
 
-    public static void PrintByBlockAsync(List<ShuDuItemModel> items)
+    public static void PrintByBlockAsync(List<SuDoKuItemModel> items)
     {
         lock (Locker)
         {
@@ -123,12 +126,12 @@ public static class Utils
         }
     }
 
-    public static void RemovePossibleItem(List<ShuDuItemModel> items, ShuDuItemModel input)
+    public static void RemovePossibleItem(List<SuDoKuItemModel> items, SuDoKuItemModel input)
     {
          RemovePossibleItem(items, input.Row, input.Col, input.PossibleValue.FirstOrDefault());
     }
 
-    public static void RemovePossibleItem(List<ShuDuItemModel> items, int row, int col, int target)
+    public static void RemovePossibleItem(List<SuDoKuItemModel> items, int row, int col, int target)
     {
         if (target == 0)
         {
@@ -166,14 +169,14 @@ public static class Utils
         SetCurrentValueAsync(items, row, col, target);
     }
 
-    private static void SetCurrentValueAsync(List<ShuDuItemModel> items, int row, int col, int target)
+    private static void SetCurrentValueAsync(List<SuDoKuItemModel> items, int row, int col, int target)
     {
         var item = items.Where(item => item.Row == row).FirstOrDefault(item => item.Col == col);
 
         item!.Val = target;
     }
 
-    public  static bool InputAsync(List<ShuDuItemModel> shuDuItems, List<string> inputLine = null)
+    public  static bool InputAsync(List<SuDoKuItemModel> shuDuItems, List<string> inputLine = null)
     {
         var inputList = new List<int>(10);
 
@@ -210,7 +213,7 @@ public static class Utils
         return true;
     }
 
-    public static SuDoKuCheckEnum HandleAsync(List<ShuDuItemModel> shuDuItems)
+    public static SuDoKuCheckEnum HandleAsync(List<SuDoKuItemModel> shuDuItems)
     {
         var itemList = shuDuItems.Where(item => item.Val == null).Where(item => item.PossibleValue.Count == 1).ToList();
 
@@ -222,12 +225,12 @@ public static class Utils
         return  CheckAsync(shuDuItems);
     }
 
-    private static bool IsFinishAsync(List<ShuDuItemModel> shuDuItems)
+    private static bool IsFinishAsync(List<SuDoKuItemModel> shuDuItems)
     {
         return shuDuItems.Count(item => item.Val == null) == 0;
     }
 
-    public static SuDoKuCheckEnum CheckAsync(List<ShuDuItemModel> items)
+    public static SuDoKuCheckEnum CheckAsync(List<SuDoKuItemModel> items)
     {
         if ( IsFinishAsync(items))
         {
@@ -246,12 +249,12 @@ public static class Utils
         return SuDoKuCheckEnum.NotComplete;
     }
 
-    private static bool HasEmptyPossibleValueAsync(List<ShuDuItemModel> items)
+    private static bool HasEmptyPossibleValueAsync(List<SuDoKuItemModel> items)
     {
         return items.Where(e => e.Val == null).Count(item => item.PossibleValue.Count == 0) > 1;
     }
 
-    private static bool IsCurrectionAsync(List<ShuDuItemModel> items)
+    private static bool IsCurrectionAsync(List<SuDoKuItemModel> items)
     {
         for (var index = 1; index < 10; index++)
         {
@@ -276,28 +279,28 @@ public static class Utils
         return true;
     }
 
-    public static Dictionary<int, List<ShuDuItemModel>> InitDic()
+    public static Dictionary<int, List<SuDoKuItemModel>> InitDic()
     {
-        return new Dictionary<int, List<ShuDuItemModel>>()
+        return new Dictionary<int, List<SuDoKuItemModel>>()
         {
-            {1, new List<ShuDuItemModel>()},
-            {2, new List<ShuDuItemModel>()},
-            {3, new List<ShuDuItemModel>()},
-            {4, new List<ShuDuItemModel>()},
-            {5, new List<ShuDuItemModel>()},
-            {6, new List<ShuDuItemModel>()},
-            {7, new List<ShuDuItemModel>()},
-            {8, new List<ShuDuItemModel>()},
-            {9, new List<ShuDuItemModel>()},
+            {1, new List<SuDoKuItemModel>()},
+            {2, new List<SuDoKuItemModel>()},
+            {3, new List<SuDoKuItemModel>()},
+            {4, new List<SuDoKuItemModel>()},
+            {5, new List<SuDoKuItemModel>()},
+            {6, new List<SuDoKuItemModel>()},
+            {7, new List<SuDoKuItemModel>()},
+            {8, new List<SuDoKuItemModel>()},
+            {9, new List<SuDoKuItemModel>()},
         };
 
     }
 
-    public static List<ShuDuItemModel> ListCopyAsync(List<ShuDuItemModel> shuDuItems)
+    public static List<SuDoKuItemModel> ListCopyAsync(List<SuDoKuItemModel> shuDuItems)
     {
-        var result = new List<ShuDuItemModel>();
+        var result = new List<SuDoKuItemModel>();
 
-        shuDuItems.ForEach(e => result.Add((ShuDuItemModel)e.Clone()));
+        shuDuItems.ForEach(e => result.Add((SuDoKuItemModel)e.Clone()));
 
         return result;
     }
