@@ -7,7 +7,6 @@ public class SnapshotCore
 {
     public async Task<SuDoKuCheckEnum> ExecAsync(List<SuDoKuItemModel> shuDuItems)
     {
-        var snap = new SnapshotCore();
         var insight = new InsightCore();
 
         do
@@ -39,18 +38,31 @@ public class SnapshotCore
     public async Task RecordSnapshotAsync(List<SuDoKuItemModel> shuDuItems,bool notExit = false)
     {
         var solver = await ExecAsync(shuDuItems);
-        if (solver == SuDoKuCheckEnum.Error)
+        switch (solver)
         {
-            return;
+            case SuDoKuCheckEnum.Error:
+                return;
+            case SuDoKuCheckEnum.Ok when !notExit:
+                Utils.PrintByBlock(shuDuItems);
+                break;
+            case SuDoKuCheckEnum.Ok:
+            {
+                if (Utils.IsExitFlag == false)
+                {
+                    Utils.IsExitFlag = true;
+                }
+
+                break;
+            }
         }
 
-        if (solver == SuDoKuCheckEnum.Ok)
-        {
-            Utils.PrintByBlock(shuDuItems,notExit);
-        }
-        
         for (int candidateCount = 2; candidateCount < 10; candidateCount++)
         {
+            if (Utils.Check(shuDuItems) == SuDoKuCheckEnum.Ok && notExit)
+            {
+                return;
+            }
+
             if (shuDuItems
                     .Where(item => item.Val == null)
                     .Where(item => item.PossibleValue.Count == candidateCount)
@@ -58,13 +70,18 @@ public class SnapshotCore
             {
                 foreach (var entity in entityList)
                 {
+                    if (Utils.Check(shuDuItems) == SuDoKuCheckEnum.Ok && notExit)
+                    {
+                        return;
+                    }
+
                     await Task.Factory.StartNew(async () =>
                     {
                         foreach (var i in entity.PossibleValue)
                         {
                             var newEntity = Utils.ListCopy(shuDuItems);
                             Utils.RemovePossibleItem(newEntity, entity.Row, entity.Col, i);
-                            await RecordSnapshotAsync(newEntity,notExit);
+                            await RecordSnapshotAsync(newEntity, notExit);
                         }
                     });
                 }

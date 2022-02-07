@@ -6,6 +6,7 @@ namespace SuDoKuHelper;
 public static class Utils
 {
     public static readonly object Locker = new();
+    public static bool IsExitFlag = false;
 
     public static List<SuDoKuItemModel> CreateTable()
     {
@@ -238,6 +239,11 @@ public static class Utils
 
     public static SuDoKuCheckEnum Check(List<SuDoKuItemModel> items)
     {
+        if (IsExitFlag)
+        {
+            return SuDoKuCheckEnum.Ok;
+        }
+
         if (IsFinish(items))
         {
             if (IsCurrection(items))

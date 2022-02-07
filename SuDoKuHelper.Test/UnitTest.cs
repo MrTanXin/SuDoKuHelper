@@ -326,10 +326,11 @@ namespace SuDoKuHelper.Test
                 "000000300"
             });
 
-            var arrange = await Record.ExceptionAsync(async () =>
-            {
-                await new SnapshotCore().RecordSnapshotAsync(table, true);
-            });
+
+            var record = await Record.ExceptionAsync(async () =>
+                await new SnapshotCore().RecordSnapshotAsync(table, true));
+
+            Assert.Null(record);
         }
 
         #endregion
