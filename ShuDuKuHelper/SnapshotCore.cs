@@ -14,7 +14,7 @@ public class SnapshotCore
         {
             var handleResult =  Utils.Handle(shuDuItems);
 
-            var insightResult = await insight.InsightAsync(shuDuItems);
+            var insightResult = insight.Insight(shuDuItems);
 
             if (handleResult == SuDoKuCheckEnum.Ok || insightResult.Item2 == SuDoKuCheckEnum.Ok)
             {

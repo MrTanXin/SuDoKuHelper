@@ -6,17 +6,17 @@ namespace SuDoKuHelper;
 public class InsightCore
 {
 
-    public async Task<(bool, SuDoKuCheckEnum)> InsightAsync(List<SuDoKuItemModel> shuDuItems)
+    public (bool, SuDoKuCheckEnum) Insight(List<SuDoKuItemModel> shuDuItems)
     {
-        var result1 = await InsightByRowAsync(shuDuItems);
-        var result2 = await InsightByColAsync(shuDuItems);
-        var result3 = await InsightByBlockAsync(shuDuItems);
+        var result1 = InsightByRow(shuDuItems);
+        var result2 = InsightByCol(shuDuItems);
+        var result3 = InsightByBlock(shuDuItems);
 
         return (result1 || result2 || result3, Utils.Check(shuDuItems));
 
     }
 
-    private async Task<bool> InsightByBlockAsync(List<SuDoKuItemModel> shuDuItems)
+    private bool InsightByBlock(List<SuDoKuItemModel> shuDuItems)
     {
         var dic = Utils.InitDic();
 
@@ -49,7 +49,7 @@ public class InsightCore
         return false;
     }
 
-    private async Task<bool> InsightByColAsync(List<SuDoKuItemModel> shuDuItems)
+    private bool InsightByCol(List<SuDoKuItemModel> shuDuItems)
     {
 
         var dic = Utils.InitDic();
@@ -83,7 +83,7 @@ public class InsightCore
         return false;
     }
 
-    private async Task<bool> InsightByRowAsync(List<SuDoKuItemModel> shuDuItems)
+    private bool InsightByRow(List<SuDoKuItemModel> shuDuItems)
     {
 
         var dic = Utils.InitDic();
