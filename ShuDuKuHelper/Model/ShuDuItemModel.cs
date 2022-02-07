@@ -1,8 +1,8 @@
 ﻿using System.Text;
 
-namespace ShuDuKuHelper;
+namespace SuDoKuHelper.Model;
 
-public class ShuDuItemModel
+public class ShuDuItemModel: ICloneable
 {
     public int Row { get; set; }
 
@@ -12,7 +12,7 @@ public class ShuDuItemModel
 
     public int? Val{ get; set; }
 
-    public string Value => Val == null ? "?" : Val.ToString();
+    public string? Value => Val == default ? "?" : Val?.ToString();
 
     public HashSet<int> PossibleValue { get; set; }
 
@@ -31,4 +31,25 @@ public class ShuDuItemModel
                 ? $"[{sb.ToString().TrimEnd(',')}]"
                 : $"Value:{Val}");
     }
+
+    public object Clone()
+    {
+        var possible = new HashSet<int>();
+
+        foreach (var i in this.PossibleValue)
+        {
+            possible.Add(i);
+        }
+
+        return new ShuDuItemModel()
+        {
+            Block = this.Block,
+            Col = this.Col,
+            Row = this.Row,
+            Val = this.Val,
+            PossibleValue = possible
+        };
+
+    }
+
 }

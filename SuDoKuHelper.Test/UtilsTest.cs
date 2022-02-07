@@ -79,7 +79,7 @@ namespace SuDoKuHelper.Test
             var utils = new Utils();
             var arrange = await utils.CreateTableAsync();
 
-            var exception = await Record.ExceptionAsync(() => utils.PrintByLinesAsync(arrange));
+            var exception = Record.Exception(() => utils.PrintByLinesAsync(arrange));
             Assert.Null(exception);
         }
 
