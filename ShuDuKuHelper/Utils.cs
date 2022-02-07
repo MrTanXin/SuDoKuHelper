@@ -1,15 +1,13 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using ShuDuKuHelper.Enum;
+﻿using SuDoKuHelper.Enum;
 using SuDoKuHelper.Model;
 
-namespace ShuDuKuHelper;
+namespace SuDoKuHelper;
 
-public class Utils
+public static class Utils
 {
-    private readonly object _locker = new();
+    private static readonly object Locker = new();
 
-    public List<ShuDuItemModel> CreateTableAsync()
+    public static List<ShuDuItemModel> CreateTableAsync()
     {
         var shuDuItems = new List<ShuDuItemModel>();
 
@@ -39,7 +37,7 @@ public class Utils
         return shuDuItems;
     }
 
-    private HashSet<int> CalcPossibleValue()
+    private static HashSet<int> CalcPossibleValue()
     {
         var set = new HashSet<int>();
         for (var i = 1; i < 10; i++)
@@ -50,7 +48,7 @@ public class Utils
         return set;
     }
 
-    private int CalcBlock(int row, int col)
+    private static int CalcBlock(int row, int col)
     {
         var colPossible = new List<int>();
 
@@ -88,7 +86,7 @@ public class Utils
         };
     }
 
-    public void PrintByLinesAsync(List<ShuDuItemModel> items)
+    public static void PrintByLinesAsync(List<ShuDuItemModel> items)
     {
         items.ForEach(e =>
         {
@@ -96,9 +94,9 @@ public class Utils
         });
     }
 
-    public void PrintByBlockAsync(List<ShuDuItemModel> items)
+    public static void PrintByBlockAsync(List<ShuDuItemModel> items)
     {
-        lock (_locker)
+        lock (Locker)
         {
             for (int row = 1; row < 10; row++)
             {
@@ -108,7 +106,7 @@ public class Utils
                         $"{items.Where(item => item.Row == row).FirstOrDefault(item => item.Col == col)?.Value} ");
 
                     if ((col) % 3 == 0)
-                    {   
+                    {
                         Console.Write(" | ");
                     }
                 }
@@ -125,12 +123,12 @@ public class Utils
         }
     }
 
-    public async Task RemovePossibleItem(List<ShuDuItemModel> items, ShuDuItemModel input)
+    public static void RemovePossibleItem(List<ShuDuItemModel> items, ShuDuItemModel input)
     {
-        await RemovePossibleItem(items, input.Row, input.Col, input.PossibleValue.FirstOrDefault());
+         RemovePossibleItem(items, input.Row, input.Col, input.PossibleValue.FirstOrDefault());
     }
 
-    public async Task RemovePossibleItem(List<ShuDuItemModel> items,int row, int col, int target)
+    public static void RemovePossibleItem(List<ShuDuItemModel> items, int row, int col, int target)
     {
         if (target == 0)
         {
@@ -165,23 +163,23 @@ public class Utils
 
         #endregion
 
-        await SetCurrentValueAsync(items, row, col, target);
+        SetCurrentValueAsync(items, row, col, target);
     }
 
-    private async Task SetCurrentValueAsync(List<ShuDuItemModel> items, int row, int col, int target)
+    private static void SetCurrentValueAsync(List<ShuDuItemModel> items, int row, int col, int target)
     {
-            var item = items.Where(item => item.Row == row).FirstOrDefault(item => item.Col == col);
+        var item = items.Where(item => item.Row == row).FirstOrDefault(item => item.Col == col);
 
-            item!.Val = target;
+        item!.Val = target;
     }
 
-    public async Task<bool> InputAsync(List<ShuDuItemModel> shuDuItems,List<string> inputLine = null)
+    public  static bool InputAsync(List<ShuDuItemModel> shuDuItems, List<string> inputLine = null)
     {
         var inputList = new List<int>(10);
 
         for (int row = 1; row < 10; row++)
         {
-            again:;
+        again:;
             Console.WriteLine($"Row {row}:");
             var input = inputLine == null ? Console.ReadLine() : inputLine[row];
             if (input?.Length != 9)
@@ -205,35 +203,35 @@ public class Utils
 
             for (var col = 1; col < 10; col++)
             {
-                await RemovePossibleItem(shuDuItems, row, col, inputList[col-1]);
+                 RemovePossibleItem(shuDuItems, row, col, inputList[col - 1]);
             }
         }
 
         return true;
     }
 
-    public async Task<SuDoKuCheckEnum> HandleAsync(List<ShuDuItemModel> shuDuItems)
+    public static SuDoKuCheckEnum HandleAsync(List<ShuDuItemModel> shuDuItems)
     {
         var itemList = shuDuItems.Where(item => item.Val == null).Where(item => item.PossibleValue.Count == 1).ToList();
 
         foreach (var item in itemList)
         {
-            await RemovePossibleItem(shuDuItems, item);
+             RemovePossibleItem(shuDuItems, item);
         }
 
-        return await CheckAsync(shuDuItems);
+        return  CheckAsync(shuDuItems);
     }
 
-    private async Task<bool> IsFinishAsync(List<ShuDuItemModel> shuDuItems)
+    private static bool IsFinishAsync(List<ShuDuItemModel> shuDuItems)
     {
-            return shuDuItems.Count(item => item.Val == null) == 0;
+        return shuDuItems.Count(item => item.Val == null) == 0;
     }
 
-    public async Task<SuDoKuCheckEnum> CheckAsync(List<ShuDuItemModel> items)
+    public static SuDoKuCheckEnum CheckAsync(List<ShuDuItemModel> items)
     {
-        if (await IsFinishAsync(items))
+        if ( IsFinishAsync(items))
         {
-            if (await IsCurrectionAsync(items))
+            if ( IsCurrectionAsync(items))
             {
                 return SuDoKuCheckEnum.Ok;
             }
@@ -241,19 +239,19 @@ public class Utils
             return SuDoKuCheckEnum.Error;
         }
 
-        if (await HasEmptyPossibleValueAsync(items))
+        if ( HasEmptyPossibleValueAsync(items))
         {
             return SuDoKuCheckEnum.Error;
         }
         return SuDoKuCheckEnum.NotComplete;
     }
 
-    private async Task<bool> HasEmptyPossibleValueAsync(List<ShuDuItemModel> items)
+    private static bool HasEmptyPossibleValueAsync(List<ShuDuItemModel> items)
     {
-            return items.Where(e => e.Val == null).Count(item => item.PossibleValue.Count == 0) > 1;
+        return items.Where(e => e.Val == null).Count(item => item.PossibleValue.Count == 0) > 1;
     }
 
-    private async Task<bool> IsCurrectionAsync(List<ShuDuItemModel> items)
+    private static bool IsCurrectionAsync(List<ShuDuItemModel> items)
     {
         for (var index = 1; index < 10; index++)
         {
@@ -278,7 +276,7 @@ public class Utils
         return true;
     }
 
-    public Dictionary<int, List<ShuDuItemModel>> InitDic()
+    public static Dictionary<int, List<ShuDuItemModel>> InitDic()
     {
         return new Dictionary<int, List<ShuDuItemModel>>()
         {
@@ -295,12 +293,11 @@ public class Utils
 
     }
 
-
-    public List<ShuDuItemModel> ListCopyAsync(List<ShuDuItemModel> shuDuItems)
+    public static List<ShuDuItemModel> ListCopyAsync(List<ShuDuItemModel> shuDuItems)
     {
         var result = new List<ShuDuItemModel>();
 
-        shuDuItems.ForEach(e => result.Add((ShuDuItemModel) e.Clone()));
+        shuDuItems.ForEach(e => result.Add((ShuDuItemModel)e.Clone()));
 
         return result;
     }

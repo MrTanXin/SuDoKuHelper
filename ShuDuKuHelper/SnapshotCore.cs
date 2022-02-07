@@ -1,22 +1,18 @@
-﻿using ShuDuKuHelper.Enum;
+﻿using SuDoKuHelper.Enum;
 using SuDoKuHelper.Model;
 
-namespace ShuDuKuHelper;
+namespace SuDoKuHelper;
 
 public class SnapshotCore
 {
-    private readonly Utils utils = new Utils();
-    private readonly Program program = new();
-
     public async Task<SuDoKuCheckEnum> ExecAsync(List<ShuDuItemModel> shuDuItems)
     {
-        var utils = new Utils();
         var snap = new SnapshotCore();
         var insight = new InsightCore();
 
         do
         {
-            var handleResult = await utils.HandleAsync(shuDuItems);
+            var handleResult =  Utils.HandleAsync(shuDuItems);
 
             var insightResult = await insight.InsightAsync(shuDuItems);
 
@@ -37,7 +33,7 @@ public class SnapshotCore
 
         } while (true);
 
-        return await utils.CheckAsync(shuDuItems);
+        return  Utils.CheckAsync(shuDuItems);
     }
 
     public async Task RecordSnapshotAsync(List<ShuDuItemModel> shuDuItems)
@@ -50,30 +46,9 @@ public class SnapshotCore
 
         if (solver == SuDoKuCheckEnum.Ok)
         {
-            utils.PrintByBlockAsync(shuDuItems);
+            Utils.PrintByBlockAsync(shuDuItems);
         }
         
-
-        //for (int row = 1; row < 10; row++)
-        //{
-        //    for (int col = 1; col < 10; col++)
-        //    {
-        //        if (shuDuItems.Where(item=>item.Row == row).Where(item=>item.Col == col).FirstOrDefault(item => item.Val == null) is {} entity)
-        //        {
-        //            foreach (var i in entity.PossibleValue)
-        //            {
-        //                var newEntity = await ListCopyAsync(shuDuItems);
-        //                await RemovePossibleItem(newEntity, row, col, i);
-        //                await HandleAsync(newEntity);
-        //                await RecordSnapshotAsync(newEntity);
-        //            }
-        //        }
-
-
-        //    }
-        //}
-
-
         for (int candidateCount = 2; candidateCount < 10; candidateCount++)
         {
             if (shuDuItems
@@ -87,19 +62,13 @@ public class SnapshotCore
                     {
                         foreach (var i in entity.PossibleValue)
                         {
-                            var newEntity = utils.ListCopyAsync(shuDuItems);
-                            await utils.RemovePossibleItem(newEntity, entity.Row, entity.Col, i);
+                            var newEntity = Utils.ListCopyAsync(shuDuItems);
+                             Utils.RemovePossibleItem(newEntity, entity.Row, entity.Col, i);
                             await RecordSnapshotAsync(newEntity);
                         }
                     });
                 }
             }
-
         }
-
-
-        return;
-
     }
-
 }

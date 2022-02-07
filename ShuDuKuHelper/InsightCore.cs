@@ -1,27 +1,25 @@
-﻿using ShuDuKuHelper.Enum;
+﻿using SuDoKuHelper.Enum;
 using SuDoKuHelper.Model;
 
-namespace ShuDuKuHelper;
+namespace SuDoKuHelper;
 
 public class InsightCore
 {
 
-    private readonly Utils _utils = new ();
-
-    public async Task<(bool,SuDoKuCheckEnum)> InsightAsync(List<ShuDuItemModel> shuDuItems)
+    public async Task<(bool, SuDoKuCheckEnum)> InsightAsync(List<ShuDuItemModel> shuDuItems)
     {
         var result1 = await InsightByRowAsync(shuDuItems);
         var result2 = await InsightByColAsync(shuDuItems);
         var result3 = await InsightByBlockAsync(shuDuItems);
 
-        return (result1 || result2 || result3, await _utils.CheckAsync(shuDuItems));
+        return (result1 || result2 || result3, Utils.CheckAsync(shuDuItems));
 
     }
 
     private async Task<bool> InsightByBlockAsync(List<ShuDuItemModel> shuDuItems)
     {
-        var dic = _utils.InitDic();
-        
+        var dic = Utils.InitDic();
+
         for (var block = 1; block < 10; block++)
         {
             var list = shuDuItems.Where(item => item.Block == block).Where(item => item.Val == null).ToList();
@@ -39,13 +37,13 @@ public class InsightCore
             {
                 var item = dicItems.FirstOrDefault();
 
-                await _utils.RemovePossibleItem(shuDuItems, item.Value.FirstOrDefault()?.Row ?? 0,
+                Utils.RemovePossibleItem(shuDuItems, item.Value.FirstOrDefault()?.Row ?? 0,
                     item.Value.FirstOrDefault()?.Col ?? 0, item.Key);
 
                 return true;
             }
 
-            dic = _utils.InitDic();
+            dic = Utils.InitDic();
 
         }
         return false;
@@ -54,7 +52,7 @@ public class InsightCore
     private async Task<bool> InsightByColAsync(List<ShuDuItemModel> shuDuItems)
     {
 
-        var dic = _utils.InitDic();
+        var dic = Utils.InitDic();
 
         for (var col = 1; col < 10; col++)
         {
@@ -68,17 +66,17 @@ public class InsightCore
                 }
             }
 
-            if (dic.Where(item => item.Value.Count == 1).ToList() is {Count: > 0} dicItems)
+            if (dic.Where(item => item.Value.Count == 1).ToList() is { Count: > 0 } dicItems)
             {
                 var item = dicItems.FirstOrDefault();
 
-                await _utils.RemovePossibleItem(shuDuItems, item.Value.FirstOrDefault()?.Row ?? 0,
-                    item.Value.FirstOrDefault()?.Col ?? 0, item.Key);
+                Utils.RemovePossibleItem(shuDuItems, item.Value.FirstOrDefault()?.Row ?? 0,
+                   item.Value.FirstOrDefault()?.Col ?? 0, item.Key);
 
                 return true;
             }
 
-            dic = _utils.InitDic();
+            dic = Utils.InitDic();
 
         }
 
@@ -88,7 +86,7 @@ public class InsightCore
     private async Task<bool> InsightByRowAsync(List<ShuDuItemModel> shuDuItems)
     {
 
-        var dic = _utils.InitDic();
+        var dic = Utils.InitDic();
 
         for (var row = 1; row < 10; row++)
         {
@@ -102,17 +100,17 @@ public class InsightCore
                 }
             }
 
-            if (dic.Where(item => item.Value.Count == 1).ToList() is {Count:>0} dicItems)
+            if (dic.Where(item => item.Value.Count == 1).ToList() is { Count: > 0 } dicItems)
             {
                 var item = dicItems.FirstOrDefault();
 
-                await _utils.RemovePossibleItem(shuDuItems, item.Value.FirstOrDefault()?.Row ?? 0,
-                    item.Value.FirstOrDefault()?.Col ?? 0, item.Key);
+                Utils.RemovePossibleItem(shuDuItems, item.Value.FirstOrDefault()?.Row ?? 0,
+                   item.Value.FirstOrDefault()?.Col ?? 0, item.Key);
 
                 return true;
             }
 
-            dic = _utils.InitDic();
+            dic = Utils.InitDic();
 
         }
 

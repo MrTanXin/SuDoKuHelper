@@ -1,4 +1,4 @@
-﻿namespace ShuDuKuHelper.Enum;
+﻿namespace SuDoKuHelper.Enum;
 
 public enum SuDoKuCheckEnum
 {

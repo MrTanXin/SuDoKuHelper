@@ -2,7 +2,7 @@
 
 namespace SuDoKuHelper.Model;
 
-public class ShuDuItemModel: ICloneable
+public class ShuDuItemModel : ICloneable
 {
     public int Row { get; set; }
 
@@ -10,7 +10,7 @@ public class ShuDuItemModel: ICloneable
 
     public int Block { get; set; }
 
-    public int? Val{ get; set; }
+    public int? Val { get; set; }
 
     public string? Value => Val == default ? "?" : Val?.ToString();
 

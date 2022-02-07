@@ -1,6 +1,5 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
-using ShuDuKuHelper;
 using Xunit;
 
 namespace SuDoKuHelper.Test
@@ -16,7 +15,7 @@ namespace SuDoKuHelper.Test
         [Fact]
         public async Task Generate_Count_Equal_81()
         {
-            var arrange = await new Utils().CreateTableAsync();
+            var arrange =  Utils.CreateTableAsync();
 
             var expected = 81;
 
@@ -30,7 +29,7 @@ namespace SuDoKuHelper.Test
         [Fact]
         public async Task Generate_In_9_Group()
         {
-            var arrange = await new Utils().CreateTableAsync();
+            var arrange =  Utils.CreateTableAsync();
 
             var expected = 9;
 
@@ -44,7 +43,7 @@ namespace SuDoKuHelper.Test
         [Fact]
         public async Task Generate_9_Rows()
         {
-            var arrange = await new Utils().CreateTableAsync();
+            var arrange =  Utils.CreateTableAsync();
 
             var expected = 9;
 
@@ -58,7 +57,7 @@ namespace SuDoKuHelper.Test
         [Fact]
         public async Task Generate_9_Cols()
         {
-            var arrange = await new Utils().CreateTableAsync();
+            var arrange =  Utils.CreateTableAsync();
 
             var expected = 9;
 
@@ -76,10 +75,9 @@ namespace SuDoKuHelper.Test
         [Fact]
         public async Task Print_No_Error()
         {
-            var utils = new Utils();
-            var arrange = await utils.CreateTableAsync();
+            var arrange = Utils.CreateTableAsync();
 
-            var exception = Record.Exception(() => utils.PrintByLinesAsync(arrange));
+            var exception = Record.Exception(() => Utils.PrintByLinesAsync(arrange));
             Assert.Null(exception);
         }
 
