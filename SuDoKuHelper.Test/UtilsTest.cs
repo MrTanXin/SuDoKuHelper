@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using NUnit.Framework.Internal.Commands;
 using SuDoKuHelper.Model;
 using Xunit;
 
@@ -19,7 +17,7 @@ namespace SuDoKuHelper.Test
         [Fact]
         public void Generate_Count_Equal_81()
         {
-            var arrange =  Utils.CreateTableAsync();
+            var arrange = Utils.CreateTable();
 
             var expected = 81;
 
@@ -33,7 +31,7 @@ namespace SuDoKuHelper.Test
         [Fact]
         public void Generate_In_9_Group()
         {
-            var arrange =  Utils.CreateTableAsync();
+            var arrange = Utils.CreateTable();
 
             var expected = 9;
 
@@ -47,7 +45,7 @@ namespace SuDoKuHelper.Test
         [Fact]
         public void Generate_9_Rows()
         {
-            var arrange =  Utils.CreateTableAsync();
+            var arrange = Utils.CreateTable();
 
             var expected = 9;
 
@@ -61,7 +59,7 @@ namespace SuDoKuHelper.Test
         [Fact]
         public void Generate_9_Cols()
         {
-            var arrange =  Utils.CreateTableAsync();
+            var arrange = Utils.CreateTable();
 
             var expected = 9;
 
@@ -73,15 +71,25 @@ namespace SuDoKuHelper.Test
         #region Print
 
         /// <summary>
-        /// 确保打印不会报错
+        /// PrintByLines不报错
         /// </summary>
         /// <returns></returns>
         [Fact]
-        public void Print_No_Error()
+        public void PrintByLine_No_Error()
         {
-            var arrange = Utils.CreateTableAsync();
+            var arrange = Utils.CreateTable();
+            var excepted = Record.Exception(() => Utils.PrintByLines(arrange));
+            Assert.Null(excepted);
+        }
 
-            var excepted = Record.Exception(() => Utils.PrintByLinesAsync(arrange));
+        /// <summary>
+        /// PrintByBlock不报错
+        /// </summary>
+        [Fact]
+        public void PrintByBlock_No_Error()
+        {
+            var arrange = Utils.CreateTable();
+            var excepted = Record.Exception(() => Utils.PrintByBlock(arrange, true));
             Assert.Null(excepted);
         }
 
@@ -97,7 +105,7 @@ namespace SuDoKuHelper.Test
         {
             var arrange = Utils.CalcBlock(4, 6);
             var excepted = 5;
-            Assert.Equal(excepted, arrange);            
+            Assert.Equal(excepted, arrange);
         }
 
         /// <summary>
@@ -147,10 +155,104 @@ namespace SuDoKuHelper.Test
 
             var cloneEntity = (SuDoKuItemModel)arrange.Clone();
 
-            Assert.NotStrictEqual(excepted,cloneEntity);
+            Assert.NotStrictEqual(excepted, cloneEntity);
         }
 
         #endregion
+
+        #region InitDic
+
+        [Fact]
+        public void InitDic_ShouldBe_Ok()
+        {
+            var excepted = new Dictionary<int, List<SuDoKuItemModel>>()
+            {
+                {1, new List<SuDoKuItemModel>()},
+                {2, new List<SuDoKuItemModel>()},
+                {3, new List<SuDoKuItemModel>()},
+                {4, new List<SuDoKuItemModel>()},
+                {5, new List<SuDoKuItemModel>()},
+                {6, new List<SuDoKuItemModel>()},
+                {7, new List<SuDoKuItemModel>()},
+                {8, new List<SuDoKuItemModel>()},
+                {9, new List<SuDoKuItemModel>()},
+            };
+
+            var arrange = Utils.InitDic();
+
+            Assert.NotStrictEqual(excepted, arrange);
+        }
+
+        #endregion
+
+        #region SetValue And ListCopy
+
+        [Fact]
+        public void SetValueAndListCopy_ShouldBe_Ok()
+        {
+            var excepted = Utils.CreateTable();
+
+            Utils.Input(excepted, new List<string>()
+            {
+                "008605000",
+                "000000700",
+                "000300000",
+                "000074050",
+                "310000000",
+                "000000200",
+                "700000064",
+                "000120000",
+                "000000300"
+            });
+
+            var arrange = Utils.ListCopy(excepted);
+
+            Assert.NotStrictEqual(excepted, arrange);
+
+        }
+
+        [Fact]
+        public void Input_ShouldBe_Raise_Exception()
+        {
+            var excepted = Utils.CreateTable();
+
+            Assert.Throws<ArgumentException>(() =>
+            {
+                Utils.Input(excepted, new List<string>()
+                {
+                    "008605"
+                });
+            });
+        }
+
+        #endregion
+
+        #region IsFinish
+
+        [Fact]
+        public void IsFinish_ShouldBe_Ok()
+        {
+            var arrange = Utils.CreateTable();
+            Utils.Input(arrange, new List<string>()
+            {
+                "478615932",
+                "963482715",
+                "152397648",
+                "296874153",
+                "315269487",
+                "847531296",
+                "721953864",
+                "634128579",
+                "589746321"
+            });
+
+            var excepted = true;
+
+            Assert.Equal(excepted, Utils.IsFinish(arrange));
+        }
+
+        #endregion
+
 
     }
 }

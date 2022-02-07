@@ -6,10 +6,10 @@ public class Program
     {
         var snap = new SnapshotCore();
 
-        var shuDuItems = Utils.CreateTableAsync();
-        //await Utils.PrintByLinesAsync(shuDuItems);
+        var shuDuItems = Utils.CreateTable();
+        //await Utils.PrintByLines(shuDuItems);
 
-        if (Utils.InputAsync(shuDuItems))
+        if (Utils.Input(shuDuItems))
         {
             Console.WriteLine("");
             Console.WriteLine("");
@@ -18,7 +18,7 @@ public class Program
             Console.WriteLine("");
         }
 
-        Utils.PrintByLinesAsync(shuDuItems);
+        Utils.PrintByLines(shuDuItems);
 
         await snap.RecordSnapshotAsync(shuDuItems);
 

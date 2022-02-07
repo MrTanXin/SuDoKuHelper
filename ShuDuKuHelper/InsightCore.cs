@@ -12,7 +12,7 @@ public class InsightCore
         var result2 = await InsightByColAsync(shuDuItems);
         var result3 = await InsightByBlockAsync(shuDuItems);
 
-        return (result1 || result2 || result3, Utils.CheckAsync(shuDuItems));
+        return (result1 || result2 || result3, Utils.Check(shuDuItems));
 
     }
 

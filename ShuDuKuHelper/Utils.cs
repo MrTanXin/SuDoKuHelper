@@ -5,9 +5,9 @@ namespace SuDoKuHelper;
 
 public static class Utils
 {
-    private static readonly object Locker = new();
+    public static readonly object Locker = new();
 
-    public static List<SuDoKuItemModel> CreateTableAsync()
+    public static List<SuDoKuItemModel> CreateTable()
     {
         var shuDuItems = new List<SuDoKuItemModel>();
 
@@ -37,7 +37,7 @@ public static class Utils
         return shuDuItems;
     }
 
-    private static HashSet<int> CalcPossibleValue()
+    public static HashSet<int> CalcPossibleValue()
     {
         var set = new HashSet<int>();
         for (var i = 1; i < 10; i++)
@@ -89,7 +89,7 @@ public static class Utils
         };
     }
 
-    public static void PrintByLinesAsync(List<SuDoKuItemModel> items)
+    public static void PrintByLines(List<SuDoKuItemModel> items)
     {
         items.ForEach(e =>
         {
@@ -97,7 +97,7 @@ public static class Utils
         });
     }
 
-    public static void PrintByBlockAsync(List<SuDoKuItemModel> items)
+    public static void PrintByBlock(List<SuDoKuItemModel> items,bool notExit = false)
     {
         lock (Locker)
         {
@@ -121,14 +121,16 @@ public static class Utils
                 }
             }
 
-            GC.WaitForFullGCComplete(5000);
-            Environment.Exit(0);
+            if (!notExit)
+            {
+                Environment.Exit(0);
+            }
         }
     }
 
     public static void RemovePossibleItem(List<SuDoKuItemModel> items, SuDoKuItemModel input)
     {
-         RemovePossibleItem(items, input.Row, input.Col, input.PossibleValue.FirstOrDefault());
+        RemovePossibleItem(items, input.Row, input.Col, input.PossibleValue.FirstOrDefault());
     }
 
     public static void RemovePossibleItem(List<SuDoKuItemModel> items, int row, int col, int target)
@@ -166,17 +168,17 @@ public static class Utils
 
         #endregion
 
-        SetCurrentValueAsync(items, row, col, target);
+        SetCurrentValue(items, row, col, target);
     }
 
-    private static void SetCurrentValueAsync(List<SuDoKuItemModel> items, int row, int col, int target)
+    public static void SetCurrentValue(List<SuDoKuItemModel> items, int row, int col, int target)
     {
         var item = items.Where(item => item.Row == row).FirstOrDefault(item => item.Col == col);
 
         item!.Val = target;
     }
 
-    public  static bool InputAsync(List<SuDoKuItemModel> shuDuItems, List<string> inputLine = null)
+    public static bool Input(List<SuDoKuItemModel> shuDuItems, List<string> inputLine = null)
     {
         var inputList = new List<int>(10);
 
@@ -184,13 +186,17 @@ public static class Utils
         {
         again:;
             Console.WriteLine($"Row {row}:");
-            var input = inputLine == null ? Console.ReadLine() : inputLine[row];
+            var input = inputLine == null ? Console.ReadLine() : inputLine[row-1];
             if (input?.Length != 9)
             {
+                if (inputList != null)
+                {
+                    throw new ArgumentException();
+                }
                 goto again;
             }
 
-            inputList.Clear();
+            inputList!.Clear();
 
             foreach (var temp in input.Select(t => Convert.ToInt32(t.ToString())))
             {
@@ -206,35 +212,35 @@ public static class Utils
 
             for (var col = 1; col < 10; col++)
             {
-                 RemovePossibleItem(shuDuItems, row, col, inputList[col - 1]);
+                RemovePossibleItem(shuDuItems, row, col, inputList[col - 1]);
             }
         }
 
         return true;
     }
 
-    public static SuDoKuCheckEnum HandleAsync(List<SuDoKuItemModel> shuDuItems)
+    public static SuDoKuCheckEnum Handle(List<SuDoKuItemModel> shuDuItems)
     {
         var itemList = shuDuItems.Where(item => item.Val == null).Where(item => item.PossibleValue.Count == 1).ToList();
 
         foreach (var item in itemList)
         {
-             RemovePossibleItem(shuDuItems, item);
+            RemovePossibleItem(shuDuItems, item);
         }
 
-        return  CheckAsync(shuDuItems);
+        return Check(shuDuItems);
     }
 
-    private static bool IsFinishAsync(List<SuDoKuItemModel> shuDuItems)
+    public static bool IsFinish(List<SuDoKuItemModel> shuDuItems)
     {
         return shuDuItems.Count(item => item.Val == null) == 0;
     }
 
-    public static SuDoKuCheckEnum CheckAsync(List<SuDoKuItemModel> items)
+    public static SuDoKuCheckEnum Check(List<SuDoKuItemModel> items)
     {
-        if ( IsFinishAsync(items))
+        if (IsFinish(items))
         {
-            if ( IsCurrectionAsync(items))
+            if (IsCurrection(items))
             {
                 return SuDoKuCheckEnum.Ok;
             }
@@ -242,19 +248,19 @@ public static class Utils
             return SuDoKuCheckEnum.Error;
         }
 
-        if ( HasEmptyPossibleValueAsync(items))
+        if (HasEmptyPossibleValue(items))
         {
             return SuDoKuCheckEnum.Error;
         }
         return SuDoKuCheckEnum.NotComplete;
     }
 
-    private static bool HasEmptyPossibleValueAsync(List<SuDoKuItemModel> items)
+    public static bool HasEmptyPossibleValue(List<SuDoKuItemModel> items)
     {
         return items.Where(e => e.Val == null).Count(item => item.PossibleValue.Count == 0) > 1;
     }
 
-    private static bool IsCurrectionAsync(List<SuDoKuItemModel> items)
+    public static bool IsCurrection(List<SuDoKuItemModel> items)
     {
         for (var index = 1; index < 10; index++)
         {
@@ -296,7 +302,7 @@ public static class Utils
 
     }
 
-    public static List<SuDoKuItemModel> ListCopyAsync(List<SuDoKuItemModel> shuDuItems)
+    public static List<SuDoKuItemModel> ListCopy(List<SuDoKuItemModel> shuDuItems)
     {
         var result = new List<SuDoKuItemModel>();
 

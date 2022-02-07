@@ -12,7 +12,7 @@ public class SnapshotCore
 
         do
         {
-            var handleResult =  Utils.HandleAsync(shuDuItems);
+            var handleResult =  Utils.Handle(shuDuItems);
 
             var insightResult = await insight.InsightAsync(shuDuItems);
 
@@ -33,7 +33,7 @@ public class SnapshotCore
 
         } while (true);
 
-        return  Utils.CheckAsync(shuDuItems);
+        return Utils.Check(shuDuItems);
     }
 
     public async Task RecordSnapshotAsync(List<SuDoKuItemModel> shuDuItems)
@@ -46,7 +46,7 @@ public class SnapshotCore
 
         if (solver == SuDoKuCheckEnum.Ok)
         {
-            Utils.PrintByBlockAsync(shuDuItems);
+            Utils.PrintByBlock(shuDuItems);
         }
         
         for (int candidateCount = 2; candidateCount < 10; candidateCount++)
@@ -62,7 +62,7 @@ public class SnapshotCore
                     {
                         foreach (var i in entity.PossibleValue)
                         {
-                            var newEntity = Utils.ListCopyAsync(shuDuItems);
+                            var newEntity = Utils.ListCopy(shuDuItems);
                              Utils.RemovePossibleItem(newEntity, entity.Row, entity.Col, i);
                             await RecordSnapshotAsync(newEntity);
                         }
