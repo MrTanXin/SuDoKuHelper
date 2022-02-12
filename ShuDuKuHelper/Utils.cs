@@ -190,7 +190,7 @@ public static class Utils
             var input = inputLine == null ? Console.ReadLine() : inputLine[row-1];
             if (input?.Length != 9)
             {
-                if (inputList != null)
+                if (inputLine != null)
                 {
                     throw new ArgumentException();
                 }
