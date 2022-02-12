@@ -185,7 +185,7 @@ public static class Utils
 
         for (int row = 1; row < 10; row++)
         {
-        again:;
+            again:;
             Console.WriteLine($"Row {row}:");
             var input = inputLine == null ? Console.ReadLine() : inputLine[row-1];
             if (input?.Length != 9)
