@@ -21,7 +21,7 @@ public class SuDoKuItemModel : ICloneable
     public override string ToString()
     {
         var sb = new StringBuilder();
-
+        
         foreach (var i in PossibleValue)
         {
             sb.Append($"{i},");
