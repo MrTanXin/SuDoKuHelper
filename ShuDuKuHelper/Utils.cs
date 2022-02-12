@@ -179,7 +179,7 @@ public static class Utils
         item!.Val = target;
     }
 
-    public static bool Input(List<SuDoKuItemModel> shuDuItems, List<string> inputLine = null)
+    public static bool Input(List<SuDoKuItemModel> shuDuItems, List<string>? inputLine = null)
     {
         var inputList = new List<int>(10);
 
