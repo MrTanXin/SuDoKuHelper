@@ -5,7 +5,7 @@ namespace SuDoKuHelper;
 
 public class SnapshotCore
 {
-    public async Task<SuDoKuCheckEnum> ExecAsync(List<SuDoKuItemModel> shuDuItems)
+    public SuDoKuCheckEnum ExecAsync(List<SuDoKuItemModel> shuDuItems)
     {
         var insight = new InsightCore();
 
@@ -37,7 +37,7 @@ public class SnapshotCore
 
     public async Task RecordSnapshotAsync(List<SuDoKuItemModel> shuDuItems,bool notExit = false)
     {
-        var solver = await ExecAsync(shuDuItems);
+        var solver = ExecAsync(shuDuItems);
         switch (solver)
         {
             case SuDoKuCheckEnum.Error:
